@@ -26,11 +26,12 @@ def getSearchString():
         print("need a keyword to query")
         os._exit(1)
 
-    q = sys.argv[1].replace(' ', '+')
+    q = sys.argv[1]
     return q
 
 
 def composeURL(q):
+    q = q.replace(' ', '+')
     return URL_FORMAT.format(q=q)
 
 
@@ -72,4 +73,5 @@ if __name__ == '__main__':
     q = getSearchString()
     url = composeURL(q)
     emojis = lookup(url)
+    caching.cacheEmojis(q, emojis)
     print(output(emojis))
