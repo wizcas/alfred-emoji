@@ -3,6 +3,7 @@ import os
 import requests
 import json
 from bs4 import BeautifulSoup
+import caching
 
 URL_FORMAT = "https://emojipedia.org/search/?q={q}"
 
@@ -66,6 +67,9 @@ def output(emojis):
     return json.dumps(data, indent=2)
 
 
-q = getSearchString()
-url = composeURL(q)
-print(output(lookup(url)))
+if __name__ == '__main__':
+    caching.init()
+    q = getSearchString()
+    url = composeURL(q)
+    emojis = lookup(url)
+    print(output(emojis))
