@@ -71,7 +71,9 @@ def output(emojis):
 if __name__ == '__main__':
     caching.init()
     q = getSearchString()
-    url = composeURL(q)
-    emojis = lookup(url)
+    emojis = caching.findEmojis(q)
+    if emojis is None:
+        url = composeURL(q)
+        emojis = lookup(url)
     caching.cacheEmojis(q, emojis)
     print(output(emojis))

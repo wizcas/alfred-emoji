@@ -42,10 +42,23 @@ def cacheEmojis(keyword, emojis):
             lambda: Emoji.get(Emoji.slug == emoji.slug),
             lambda: Emoji.create(
                 name=emoji.name, emoji=emoji.emoji, slug=emoji.slug))
-        print('keyword {k}, emoji {e}'.format(k=keyword, e=emoji))
         (EmojiKeyword.insert(emoji=emoji, keyword=keyword)
          .on_conflict_ignore()
          .execute())
+
+
+def findEmojis(keyword):
+    try:
+        emojis = []
+        emojiIds = EmojiKeyword.select(EmojiKeyword.emoji).join(
+            Keyword).where(Keyword.value == keyword)
+
+        query = Emoji.select().where(Emoji.id.in_(emojiIds))
+        for result in query.execute():
+            emojis.append(result)
+        return emojis if len(emojis) > 0 else None
+    except DoesNotExist:
+        return None
 
 
 def __upsert(getter, creator):
